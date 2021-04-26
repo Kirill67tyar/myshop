@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Продукт {% if category %}by {{ category.name }}{% endif %}{% endblock %}
+
+{% block content %}
+<div id="sidebar">
+    <h3>Категории</h3>
+    <ul>
+        <li {% if not category %}class="selected" {% endif %}>
+            <a href="{% url 'shop:product_list' %}">
+                Все товары
+            </a>
+        </li>
+        {% for c in categories %}
+        <li {% if c.slug == category.slug %}class="selected" {% endif %}>
+            <a href="{{ c.get_absolute_url }}">
+                {{ c.name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div id="main" class="product-list">
+    <h1>Товары{% if category %} по категории '{{category}}'{% endif %}</h1>
+    {% for product in products %}
+    <div class="item">
+        {% include '_inc/get_image.html' %}
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        <br>
+        ${{ product.price }}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
