@@ -35,7 +35,7 @@ def get_view_at_console(obj, delimiter='*', unpack=False, sep='\n'):
     """
 
     :param obj: объект который нужно вывести в консоль
-    :param delimiter: то каким символом разделять вывод в консоли сверху и снизу
+    :param delimiter: то каким символом разделять вывод в консоли сверху и снизу. Можно указать False
     :param unpack: распаковывать эдемент на методы и атрибуты или нет (помещать в dir())
     :param sep: по умолчанию равен '\n'
     :return:
@@ -47,7 +47,7 @@ def get_view_at_console(obj, delimiter='*', unpack=False, sep='\n'):
     else:
         args = [sep, name, obj, sep]
     if delimiter:
-        delimiter = delimiter * 25
+        delimiter = delimiter * 25 * 2
         args.insert(1, delimiter)
         args.insert(-1, delimiter)
     return print(*args, sep='\n')

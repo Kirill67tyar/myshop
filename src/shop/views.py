@@ -9,13 +9,20 @@ def experiments(request):
     # get_view_at_console(request.session.items(), unpack=0, delimiter='*')
     # get_view_at_console(request.session.get('_auth_user_hash'), unpack=0, delimiter='^')
     # get_view_at_console(request.session, unpack=0, delimiter='#')
-    request.session['foo'] = 'bar'
-    get_view_at_console(request.session['foo'], unpack=0, delimiter='#')
-    del request.session['foo']
-    try:
-        get_view_at_console(request.session['foo'], unpack=0, delimiter='#')
-    except KeyError:
-        print('Key "foo" and value "bar" more does not exists', end='\n\n\n')
+    # get_view_at_console(request, unpack=1, delimiter='#')
+    # request.session['foo'] = 'bar'
+    # get_view_at_console(request.session['foo'], unpack=0, delimiter='#')
+    # del request.session['foo']
+    # try:
+    #     get_view_at_console(request.session['foo'], unpack=0, delimiter='#')
+    # except KeyError:
+    #     print('Key "foo" and value "bar" does not exists anymore', end='\n\n\n')
+    # try:
+    #     print(request.__name__)
+    # except AttributeError:
+    #     print('request has not attribute __name__', end='\n\n\n')
+    # get_view_at_console(Product)
+    get_view_at_console(request.session.modified)
 
 
 def product_list_view(request, category_slug=None):
@@ -36,6 +43,7 @@ def product_list_view(request, category_slug=None):
 
 def product_detail_view(request, id, slug):
     experiments(request)
+
 
     kwargs = {
         'klass': Product,
