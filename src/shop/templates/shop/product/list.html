@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Продукт {% if category %}by {{ category.name }}{% endif %}{% endblock %}
+{% block title %}Продукт {% if category %}по категори "{{ category.name }}"{% endif %}{% endblock %}
 
 {% block content %}
 <div id="sidebar">
@@ -26,7 +26,7 @@
     {% for product in products %}
     <div class="item">
         {% include '_inc/get_image.html' %}
-        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        <a href="{{ product.get_absolute_url }}">{{ product }}</a>
         <br>
         ${{ product.price }}
     </div>
