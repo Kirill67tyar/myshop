@@ -8,8 +8,14 @@
 # (общие могут просто перекрыть частные)
 
 #                   Сессия (Sessions)
-# https://developer.mozilla.org/ru/docs/Web/HTTP/Session
+#
 """
+sourses:
+https://developer.mozilla.org/ru/docs/Web/HTTP/Session
+https://ru.wikipedia.org/wiki/%D0%A1%D0%B5%D1%81%D1%81%D0%B8%D1%8F_(%D0%B2%D0%B5%D0%B1-%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D1%82%D0%B8%D0%BA%D0%B0)
+
+from django.contrib.sessions.middleware import SessionMiddleware
+
 HTTP сессия
 Так как HTTP — это клиент-серверный протокол, HTTP сессия состоит из трёх фаз:
 
@@ -34,7 +40,8 @@ HTTP сессия
 произвольные данные браузера и получать их в тот момент, когда между данным браузером и сайтом
 устанавливается соединение. Данные получаются и сохраняются в сессии при помощи соответствующего "ключа".
 (Вспоминай сессионный ключ, который формируется функцией login(request, user)
-В данном случае сессионный ключ формируется на стороне сервера)
+В данном случае сессионный ключ формируется на стороне сервера, но хранится
+я так понимаю на стороне браузера)
 
 Django использует куки (cookie), которые содержат специальный идентификатор сессии,
 который выделяет среди остальных, каждый браузер и соответствующую сессию. Реальные данные сессии,
@@ -130,12 +137,13 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE - время жизни сессии на осн
 закрытия браузера (проще - время жизни сессии в браузере) по умоланию False
 Если установить True - сессия будет заканчиваться при закрытии пользователем браузера
 
-SESSION_SAVE_EVERY_REQUEST - булево значение. Если оноравно True, сессия будет
+SESSION_SAVE_EVERY_REQUEST - булево значение. Если оно равно True, сессия будет
 сохраняться в бд при каждом запросе. При этом время оконания ее действия булет
 автоматиески обновляться
 
 !!! Самая важная настройка сессии - SESSION_ENGINE - позволяет указать каким образом
 хранить данные сессии (по умолчанию сохраняются в бд, таблицу django_session)
+По умоланию SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 метод set_expiry() объекта request.session - тоже может изменить время жизни сессии
 
@@ -171,12 +179,84 @@ pop
 save
 serializer
 session_key
-set_expiry - можно установить время жизни сессий (with __call__)
+set_expiry - можно установить время жизни сессий (callable)
 set_test_cookie
 setdefault
 test_cookie_worked
 update
 values
 
+
+
+
+
+----------------------------------------------------------------------------------------------------------
+sources:
+https://docs.djangoproject.com/en/3.2/ref/templates/api/#built-in-template-context-processors
+https://docs.djangoproject.com/en/3.2/ref/templates/api/
+
+                            Контекстный процессор django
+
+как сделать так, чтобы какая-нибудь переменная была доступна на всех шаблонах проекта?
+скажем как request
+
+Для этого и существует контекстный процессор. В настройках в константе TEMPLATES по ключу OPTIONS
+список подключенных контекстных процессоров. Они устанавливаются автоматически.
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [ ----------- ВОТ ЭТО И ЕСТЬ ПОДКЛЮЧЕННЫЕ КОНТЕКСТНЫЕ ПРОЦЕССОРЫ
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+Контекстный процессор - это функция Python, принимающая объект запроса request (request - это и есть объект)
+и возвращающая словарь, который будет добавлен в контекст запроса.
+К их использованию прибегают, когда нужно получить доступ к какимм-либо объектам или
+переменным глобально, во всех шаблонах
+
+Когда мы создаем проект django-admin startproject some_name в проект уже добавляется несколько
+контекстных процессоров:
+1) django.template.context_processors.debug - Добавляет булевое знаяение debug и переменную
+sql_queries содержащую выполненные для запроса SQL инструкции в контексте шаблона
+
+2) django.template.context_processors.request - добавляет объект запроса request в контекст
+(request - экземпляр класса HttpRequest)
+
+3) django.contrib.auth.context_processors.auth - добавляет объект текущего пользователя в
+переменную user (можен request.user)
+
+4) django.contrib.messages.context_processors.messages - добавляет переменную messages, содержащую
+уведомления сформированные для пользователя подсистемой сообщений Django
+
+Есть еще django.template.context_processors.csrf процессор - обезопашивающий проект от
+CSRF-атак. Отключить его никак нельзя (во всяком случае без хака django).
+
+Полный список контекстных прочцессоров
+https://docs.djangoproject.com/en/3.2/ref/templates/api/#built-in-template-context-processors
 """
-from django.contrib.sessions.middleware import SessionMiddleware
+# Минутка философии
+# когда создаешь какой-нибудь класс, подумай - целесообразно ли создавать класс чтобы там
+# был полный функционал CRUD для объекта. Иногда бывает целесообразно, иногда нет.
+# Дальше, если целесообразно, то сторой ответвления
+# Creat - что создавать, какой должен быть объект.
+# Read - что показывать, какой объект или параметры. что нужно показать.
+# Update - что изменить, опять же, какие параметры. полностью ли объект изменить, или частично.
+# Creat - что удалить и как.
+# очень хороший пример CRUD функционала - cart/cart.py - класс Cart
+# для работы с сессиями.
+from django.template.context_processors import request
+
+
+# request - экземляр класса HttpRequest
+# посмотреть на него можно здесь:
+# from django.http.request import HttpRequest, QueryDict

@@ -12,6 +12,11 @@
         </a>
     </h2>
     <p class="price">${{ product.price }}</p>
+    <form action="{% url 'cart:add_cart' product.pk %}" method="POST">
+        {{ add_quantity_product_to_cart_form }}
+        {% csrf_token %}
+        <input type="submit" value="Добавить в корзину">
+    </form>
     {{ product.description|linebreaks }}
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import request
 
 from shop.models import Product
 
@@ -32,10 +33,10 @@ class Cart:
 
         # если update_quantity == True - то присваиваем новую цену
         if update_quantity:
-            self.cart[product_id]['price'] = quantity
+            self.cart[product_id]['quantity'] = quantity
         # иначе добавляем
         else:
-            self.cart[product_id]['price'] += quantity
+            self.cart[product_id]['quantity'] += quantity
 
         self.save()
 
@@ -43,13 +44,13 @@ class Cart:
         # modified (по умолчанию False) - позволит подтвердить наши изменения
         self.session.modified = True
 
-    def remove(self, product, update_quantity=False):
+    def remove(self, product, minus_one=False):
         """
         Удаляем товар из корзины по одному, если update_quantity=True, или полностью
         """
         product_id = str(product.pk)
         if product_id in self.cart:
-            if update_quantity and self.cart[product_id]['quantity'] > 1:
+            if minus_one and self.cart[product_id]['quantity'] > 1:
                 self.cart[product_id]['quantity'] -= 1
             else:
                 del self.cart[product_id]
@@ -77,7 +78,7 @@ class Cart:
 
     def get_total_price(self):
         """Получение итоговой цена"""
-        return sum([Decimal(item['price']) for item in self.cart.values()])
+        return sum([Decimal(item['price']) * item['quantity'] for item in self.cart.values()])
 
     def clear(self):
         """Очищение корзины"""

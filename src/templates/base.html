@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
+
 </head>
 <body>
 
@@ -16,7 +18,12 @@
 
 <div id="subheader">
     <div class="cart">
-        Ваша корзина пуста
+        <a href="{% url 'cart:detail_cart' %}">
+            <h3>Корзина&nbsp;
+                <i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i>
+            </h3>
+
+        </a>
     </div>
 </div>
 

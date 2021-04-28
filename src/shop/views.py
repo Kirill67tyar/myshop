@@ -1,9 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from shop.models import Category, Product
 from shop.utils import get_view_at_console, get_view_at_console2
+from django.conf import settings
+from cart.forms import CartAddProductForm
 
 
 def experiments(request):
+    """
+    obj, delimiter='*', unpack=False, sep='\n'
+    """
     # get_view_at_console(request.session.keys(), unpack=0, delimiter='+')
     # get_view_at_console(request.session.values(), unpack=0, delimiter='=')
     # get_view_at_console(request.session.items(), unpack=0, delimiter='*')
@@ -22,7 +27,9 @@ def experiments(request):
     # except AttributeError:
     #     print('request has not attribute __name__', end='\n\n\n')
     # get_view_at_console(Product)
-    get_view_at_console(request.session.modified)
+    # get_view_at_console(request.session.modified)
+    # get_view_at_console(request, unpack=True)
+    get_view_at_console(settings.SESSION_ENGINE)
 
 
 def product_list_view(request, category_slug=None):
@@ -44,7 +51,6 @@ def product_list_view(request, category_slug=None):
 def product_detail_view(request, id, slug):
     experiments(request)
 
-
     kwargs = {
         'klass': Product,
         'id': id,
@@ -54,5 +60,6 @@ def product_detail_view(request, id, slug):
     product = get_object_or_404(**kwargs)
     context = {
         'product': product,
+        'add_quantity_product_to_cart_form': CartAddProductForm,
     }
     return render(request, 'shop/product/detail.html', context=context)
