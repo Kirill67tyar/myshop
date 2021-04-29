@@ -51,6 +51,8 @@
 
 <p class="text-right">
     <a href="{% url 'shop:product_list' %}" class="button light">Продолжить покупки</a>
-    <a href="#" class="button">Проверка</a>
+    {% if cart|length > 0 %}
+    <a href="{% url 'orders:create_order' %}" class="button">Оформить</a>
+    {% endif %}
 </p>
 {% endblock %}

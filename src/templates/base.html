@@ -19,7 +19,14 @@
 <div id="subheader">
     <div class="cart">
         <a href="{% url 'cart:detail_cart' %}">
-            <h3>Корзина&nbsp;
+            <h3>
+                {% with total_items=cart|length %}
+                {% if cart|length > 0 %}
+                {{ total_items }}
+                {% else %}
+                Корзина пуста
+                {% endif %}
+                {% endwith %}&nbsp;
                 <i class="fa fa-shopping-basket fa-2x" aria-hidden="true"></i>
             </h3>
 
