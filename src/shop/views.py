@@ -1,7 +1,10 @@
+from django.core.mail import send_mail
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
+
 from shop.models import Category, Product
 from shop.utils import get_view_at_console, get_view_at_console2
-from django.conf import settings
+
 from cart.forms import CartAddProductForm
 
 
@@ -29,7 +32,10 @@ def experiments(request):
     # get_view_at_console(Product)
     # get_view_at_console(request.session.modified)
     # get_view_at_console(request, unpack=True)
-    get_view_at_console(settings.SESSION_ENGINE)
+    # get_view_at_console(settings.SESSION_ENGINE)
+    # email_sent = send_mail('some subject', 'mail came', settings.EMAIL_HOST_USER, ['kirillbogomolov.ric@yandex.ru'])
+    # return email_sent
+    return 'experiment'
 
 
 def product_list_view(request, category_slug=None):
@@ -63,3 +69,6 @@ def product_detail_view(request, id, slug):
         'add_quantity_product_to_cart_form': CartAddProductForm,
     }
     return render(request, 'shop/product/detail.html', context=context)
+
+
+

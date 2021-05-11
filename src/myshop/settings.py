@@ -25,6 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -158,3 +160,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 CART_SESSION_ID = 'cart'
+
+
+# # email backend, который позвляет нам вместо почты (работы с SMTP сервером) использовать консоль
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+# -------------------------------------------------------- SMTP-server settings
+# # email backend, который позвляет нам вместо почты (работы с SMTP сервером) использовать консоль
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#                   ^----^----^ OR v----v----v
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+# -------------------------------------------------------- SMTP-server settings

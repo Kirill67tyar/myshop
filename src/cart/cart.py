@@ -6,7 +6,7 @@ from shop.models import Product
 from decimal import Decimal
 
 
-# помни, что нащ request.session - по сути словарь
+# помни, что наш request.session - по сути словарь
 # а словарь у на что? правильно - мутабельный тип данных
 # т.е. при работе с self.session бы будем работать и с request.session
 
@@ -18,7 +18,7 @@ class Cart:
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         self.cart = cart
-        # ключ в словаре self.cart будет id товара,
+        # ключами в словаре self.cart будет id товаров,
         # а значением - другой словарь с ключами количества и цена {'quantity':..., 'price':...,}
 
     def add(self, product, quantity=1, update_quantity=False):
@@ -58,12 +58,16 @@ class Cart:
 
     def __iter__(self):
         """
-        Проходим по товарам корзины и получаем объекты класса Product
-        с итоговой ценой и коичеством товара со своим уникальным id
+        Проходим по товарам корзины и получаем словари объекты словарь, со значениями:
+        quantity: количество данного товара (тип данных int)
+        product: объект класса Product
+        price: price - экземпляр класса Price
+        total_price: итоговая цена (цена одного экземпляра умноженное на количество)
         """
         cart = self.cart.copy()
         products = Product.objects.filter(id__in=cart.keys())
 
+        # добавляем в наш словарь (значчения ключа product_id) экземпляр модели Product
         for product in products:
             cart[str(product.pk)]['product'] = product
 

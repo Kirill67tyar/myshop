@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{% endblock %}
+{% block title %}Корзина{% endblock %}
 
 {% block content %}
 <h1>Ваша корзина покупок</h1>
@@ -55,4 +55,5 @@
     <a href="{% url 'orders:create_order' %}" class="button">Оформить</a>
     {% endif %}
 </p>
+<br>
 {% endblock %}

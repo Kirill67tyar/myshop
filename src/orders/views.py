@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from orders.forms import CreateOrderModelForm
 from orders.models import OrderItem
+from orders.tasks import order_created_task
 from cart.cart import Cart
 
 
@@ -20,6 +21,9 @@ def create_order_view(request):
                 }
                 OrderItem.objects.create(**kwargs)
             cart.clear()
+            # метод delay() - запускает задачу асинхронно
+            # order_created_task.delay(order.pk)
+            order_created_task(order.pk)
             return render(request, 'orders/create_done.html', {'order': order, })
     else:
         form = CreateOrderModelForm()
