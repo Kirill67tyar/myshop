@@ -48,3 +48,4 @@ class Product(models.Model):
 
 # Для таблицы shop_product где внешний ключ category_id - это отношение не Один ко Многим, а 
 # Многие к Одному
+# Столбик price в db будет иметь тип данных decimal а не integer

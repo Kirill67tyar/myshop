@@ -31,6 +31,7 @@ def experiments(request):
     #     print('request has not attribute __name__', end='\n\n\n')
     # get_view_at_console(Product)
     # get_view_at_console(request.session.modified)
+    get_view_at_console(request.session.items(), unpack=1)
     # get_view_at_console(request, unpack=True)
     # get_view_at_console(settings.SESSION_ENGINE)
     # email_sent = send_mail('some subject', 'mail came', settings.EMAIL_HOST_USER, ['kirillbogomolov.ric@yandex.ru'])

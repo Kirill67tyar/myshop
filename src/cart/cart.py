@@ -50,10 +50,11 @@ class Cart:
         """
         product_id = str(product.pk)
         if product_id in self.cart:
-            if minus_one and self.cart[product_id]['quantity'] > 1:
-                self.cart[product_id]['quantity'] -= 1
-            else:
-                del self.cart[product_id]
+            # if minus_one and self.cart[product_id]['quantity'] > 1:
+            #     self.cart[product_id]['quantity'] -= 1
+            # else:
+            #     del self.cart[product_id]
+            del self.cart[product_id]
             self.save()
 
     def __iter__(self):
