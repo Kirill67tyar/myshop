@@ -330,6 +330,11 @@ http://127.0.0.1:8000/admin/orders/order/add/
 в классе, в котором хочешь, чтобы эта модель отображалась
 
 
+Добавление собственных действий в сайт администрирования, например
+вывод информации из бд в формат csv
+https://docs.djangoproject.com/en/3.2/howto/outputting-csv/
+
+
 
 ----------------------------------------------------------------------------------------------------------
                             celery
@@ -355,7 +360,83 @@ queue - очередь (просто слово)
 Существует договоренность, что асинхронные задачи для celery должны быть расположены в
 файле tasks.py одного из приложений
 в нашем случае orders/tasks.py
+
+
+----------------------------------------------------------------------------------------------------------
+                        Options
+
+from django.db.models.options import Options
+
+SomeModel._meta - получишь класс экземпляр класса Options этой модели
+
+Очень интересный класс Options. Посмотри на аргументы, которые передаются туда в конструктор
+Выглядит так, что он схож с ContentType
+
+Но отличий очень много:
+
+-- Options не имеет таблицы в db
+-- Мета данные, которые мы можем получить в Options - более подробные чем в ContentType (посмотри в конструктор)
+-- Если нет своей таблицы, то это означает, что данные хранятся в оперативной памяти
+а это означает то данные генерируются каждый раз заново, когда мы работаем с Options
+Получается что класс Options - читает модель с которой работает
+
+Методов у Options тоже очень много и все многие из них крутые
+
+есть метод get_fields() - где ты получаешь кастомный список django состоящий из полей этой модели
+состоящий из полей этой модели
+Кстати не забывай - что поля модели это тоже классы python со своими методами и аттрибуами
+
+Вот аттрибуты и методы поля ManyToOne (ForeignKey для зависимой модели):
+auto_created
+concrete
+db_type
+delete_cached_value
+editable
+empty_strings_allowed
+field
+field_name
+get_accessor_name
+get_cache_name
+get_cached_value
+get_choices
+get_extra_restriction
+get_internal_type
+get_joining_columns
+get_lookup
+get_path_info
+get_related_field
+hidden
+identity
+is_cached
+is_hidden
+is_relation
+limit_choices_to
+many_to_many
+many_to_one
+model
+multiple
+name -- дает название поля (как он назван в модели). Аттрибут
+null
+on_delete
+one_to_many
+one_to_one
+parent_link
+related_model
+related_name
+related_query_name
+remote_field
+set_cached_value
+set_field_name
+symmetrical
+target_field
+
+Работать с полями модели можно по полной программе.
+Очень хороший пример работы с Options и полями модели (а также просто с админкой) -
+- смотри в файле orders/admin.py
+
+Options - это отличный класс для работы с meta-data модели, которые не хранятся в db
 """
+from django.db.models.options import Options
 # Минутка философии
 # когда создаешь какой-нибудь класс, подумай - целесообразно ли создавать класс чтобы там
 # был полный функционал CRUD для объекта. Иногда бывает целесообразно, иногда нет.
@@ -385,3 +466,9 @@ queue - очередь (просто слово)
 # quantity = PositiveIntegerField()
 # SQL команда будет:
 # "quantity" integer unsigned NOT NULL CHECK ("quantity" >= 0)
+
+# класс HttpResponse намного больше чем просто вывести что-то на страницу
+# с помощью HttpResponse можно определить content_type и другие заголовки
+# при формировании response
+# Посмотри как он устроен, какие аргументы туда передаются:
+# from django.http import HttpResponse

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse, redirect
 
 from orders.forms import CreateOrderModelForm
 from orders.models import OrderItem
@@ -24,7 +24,9 @@ def create_order_view(request):
             # метод delay() - запускает задачу асинхронно
             # order_created_task.delay(order.pk)
             order_created_task(order.pk)
-            return render(request, 'orders/create_done.html', {'order': order, })
+            request.session['order_id'] = order.pk
+            return redirect(reverse('payment:process'))
+            # return render(request, 'orders/create_done.html', {'order': order, })
     else:
         form = CreateOrderModelForm()
     return render(request, 'orders/create.html', {'form': form, })

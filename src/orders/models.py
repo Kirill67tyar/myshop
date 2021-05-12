@@ -12,6 +12,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
     updated = models.DateTimeField(auto_now=True, verbose_name='Изменено')
     paid = models.BooleanField(default=False, verbose_name='Оплачен?')
+    braintree_id = models.CharField(max_length=200, blank=True, verbose_name='ID чека')
 
     class Meta:
         ordering = ('-created',)
