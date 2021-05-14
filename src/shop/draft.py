@@ -369,20 +369,21 @@ from django.db.models.options import Options
 
 SomeModel._meta - получишь класс экземпляр класса Options этой модели
 
-Очень интересный класс Options. Посмотри на аргументы, которые передаются туда в конструктор
+Очень интересный класс Options. Посмотри на аттрибуты экземпляра, которые создаются конструкторе
+self от Options потом сможет работать с этими аттрибутами (аттрибуты кземпляра класса)
 Выглядит так, что он схож с ContentType
 
 Но отличий очень много:
 
 -- Options не имеет таблицы в db
 -- Мета данные, которые мы можем получить в Options - более подробные чем в ContentType (посмотри в конструктор)
--- Если нет своей таблицы, то это означает, что данные хранятся в оперативной памяти
+-- Если нет своей таблицы в бд, то это означает, что данные хранятся в оперативной памяти
 а это означает то данные генерируются каждый раз заново, когда мы работаем с Options
 Получается что класс Options - читает модель с которой работает
 
 Методов у Options тоже очень много и все многие из них крутые
 
-есть метод get_fields() - где ты получаешь кастомный список django состоящий из полей этой модели
+есть метод get_fields() - где ты получаешь кастомный список django
 состоящий из полей этой модели
 Кстати не забывай - что поля модели это тоже классы python со своими методами и аттрибуами
 
@@ -435,6 +436,24 @@ target_field
 - смотри в файле orders/admin.py
 
 Options - это отличный класс для работы с meta-data модели, которые не хранятся в db
+
+Вот что написано в конструкторе Options:
+# For any class that is a proxy (including automatically created
+# classes for deferred (отложенный) object loading), proxy_for_model tells us
+# which class this model is proxying. Note that proxy_for_model
+# can create a chain of proxy models. For non-proxy models, the
+# variable (переменная) is always None.
+
+# For any non-abstract class, the concrete class is the model
+# in the end of the proxy_for_model chain. In particular, for
+# concrete models, the concrete_model is always the class itself.
+
+# List of all lookups defined in ForeignKey 'limit_choices_to' options
+# from *other* models. Needed for some admin checks. Internal use only.
+
+# A custom app registry to use, if you're making a separate model set.
+
+
 """
 from django.db.models.options import Options
 # Минутка философии
@@ -472,3 +491,4 @@ from django.db.models.options import Options
 # при формировании response
 # Посмотри как он устроен, какие аргументы туда передаются:
 # from django.http import HttpResponse
+# Это очень класс, позволяющий гибкие инстументы для формирования своего response

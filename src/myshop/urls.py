@@ -30,3 +30,13 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # myshop_admin
+
+# панель для системы оплаты braintree - demo version (не для продакшн).
+# https://sandbox.braintreegateway.com/merchants/nv5dfpjh7jv353hc/home
+# именно от сюда берется BRAINTREE_MERCHANT_ID, BRAINTREE_PUBLIC_KEY и BRAINTREE_PRIVATE_KEY
+
+# для пробного варианта используй карту:
+# № 4111 1111 1111 1111
+# CVV - 123
+# date - 12/24
+

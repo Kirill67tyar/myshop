@@ -1,7 +1,8 @@
-from django.shortcuts import render, reverse, redirect
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 
 from orders.forms import CreateOrderModelForm
-from orders.models import OrderItem
+from orders.models import OrderItem, Order
 from orders.tasks import order_created_task
 from cart.cart import Cart
 
@@ -30,3 +31,10 @@ def create_order_view(request):
     else:
         form = CreateOrderModelForm()
     return render(request, 'orders/create.html', {'form': form, })
+
+# staff_member_required - проверяет у request.user - is_staff==True и admin==True
+@staff_member_required
+def order_detail_view(request, order_id):
+    order = get_object_or_404(Order, pk=order_id)
+    return render(request, )
+    pass
