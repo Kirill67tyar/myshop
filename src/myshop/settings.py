@@ -143,7 +143,7 @@ STATICFILES_DIRS = [
 
 
 # здесь мы указываем куда django будет собирать всю статику проекта при команде collectstatic
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 # -------------------------------------------------------- STATIC settings
 
 

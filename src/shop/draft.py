@@ -334,6 +334,23 @@ http://127.0.0.1:8000/admin/orders/order/add/
 вывод информации из бд в формат csv
 https://docs.djangoproject.com/en/3.2/howto/outputting-csv/
 
+Когда мы расширяем стандартные страницы сайта администрирования - нужно знать, какие блоки использует django
+блоки в базовом шаблоне сайта администрирования django:
+https://github.com/django/django/tree/main/django/contrib/admin/templates/admin
+
+Чтобы переопределить шаблоны django - достаточно воспроизвести иерархию папок
+сайта администрирования django в каталоге templates нашего приложения
+тогда django будет находить файлы первыми и использовать их
+
+А в остальном смотри в приложении orders
+обрати внимание, на то, то мы передали функцию в list_display  - order_detail
+посмотри на что эта функция ссылается и все такое
+
+Важно!! запомни декоратор @staff_member_required
+Он очень важный для работы с админкой
+staff_member_required - проверяет у request.user - is_staff==True и admin==True
+
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 ----------------------------------------------------------------------------------------------------------
@@ -453,7 +470,13 @@ Options - это отличный класс для работы с meta-data м
 
 # A custom app registry to use, if you're making a separate model set.
 
+Имхо - Options дает возможность сделать наш код универсальным при работе с моделями,
+а не работать нам с конкретно какой-то моделью
 
+смотри на функцию export_to_csv (from orders.admin import export_to_csv)
+Отличный пример работы с Options
+
+Да и сам Options переводится как "опции" что хорошо соответствует функции этого класса
 """
 from django.db.models.options import Options
 # Минутка философии
@@ -492,3 +515,21 @@ from django.db.models.options import Options
 # Посмотри как он устроен, какие аргументы туда передаются:
 # from django.http import HttpResponse
 # Это очень класс, позволяющий гибкие инстументы для формирования своего response
+
+
+# Функцию mark_safe нужно использовать, чтобы избежать пропуска HTML тегов
+# Важно не использовать эту функцию для данных введеных пользователями сайта
+# так как пользователь может ввести html код
+# from django.utils.safestring import mark_safe
+
+# Очень крутая функция django - render_to_string
+from django.template.loader import render_to_string
+# Посмотри, какие аргументы она принимает
+# Передаешь template_name. Передаешь котнекст для этого шаблона
+# и эта функция преобразует этот шаблон в объект python - str.
+
+# Библиотека python для работы с PDF - Reportlab
+
+# Что даст python --version --version  huh?
+# $ python --version --version
+# Python 3.7.3 (v3.7.3:ef4ec6ed12, Mar 25 2019, 21:26:53) [MSC v.1916 32 bit (Intel)]
