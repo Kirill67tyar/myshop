@@ -75,6 +75,11 @@ def order_detail(obj):
     return mark_safe(f'<a href={relative_url}>View</a>')
 
 
+def order_detail_pdf(obj):
+    relative_url = reverse('orders:order_detail_in_pdf', args=[obj.pk])
+    return mark_safe(f'<a href={relative_url} target="_blank">PDF</a>')
+
+
 class OrderItemTabularInline(admin.TabularInline):
     model = OrderItem
     raw_id_fields = ['product', ]
@@ -85,7 +90,7 @@ class OrderModelAdmin(admin.ModelAdmin):
     list_display = ['pk', 'first_name', 'last_name',
                     'email', 'address', 'postal_code',
                     'city', 'created', 'updated', 'paid',
-                    order_detail, ]
+                    order_detail, order_detail_pdf, ]
 
     list_filter = ['paid', 'created', 'updated', ]
     inlines = [OrderItemTabularInline, ]

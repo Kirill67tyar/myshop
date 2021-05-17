@@ -1,15 +1,22 @@
-# import weasyprint
+# import weasyprint - не работает
+import time
+import os
+from fpdf import FPDF, HTMLMixin
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.conf import settings
 
 from orders.forms import CreateOrderModelForm
 from orders.models import OrderItem, Order
 from orders.tasks import order_created_task
 from cart.cart import Cart
+
+
+class WriteHTMLinPDF(FPDF, HTMLMixin):
+    pass
 
 
 def create_order_view(request):
@@ -39,6 +46,7 @@ def create_order_view(request):
 
 
 # staff_member_required - проверяет у request.user - is_staff==True и admin==True
+# и если да, то дает дальнейший доступ к функции (а если нет, то скорее всего status_code - Forbidden)
 @staff_member_required
 def order_detail_view(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
@@ -47,14 +55,22 @@ def order_detail_view(request, order_id):
 
 
 @staff_member_required
-def order_in_pdf_view(request, order_id):
+def order_detail_in_pdf_view(request, order_id):
     order = get_object_or_404(Order, pk=order_id)
     template_html = render_to_string(template_name='orders/pdf.html',
                                      context={'order': order})
+
+    pdf = WriteHTMLinPDF()
+    pdf.add_page()
+    pdf.write_html(template_html)
+    content = pdf.output(f'order_{order.pk}.pdf', 'S').encode('latin-1')
+
+    # HttpResponse - working version
     response = HttpResponse(content_type='application/pdf')
-    # для pdf здесь почему-то в знаечнии заголовка не надо прикреплять 'attachment;'
     response['Content-Disposition'] = f'filename=order_{order.pk}.pdf'
-    # weasyprint.HTML(string=template_html).write_pdf(response,
-    #                                                 stylesheets=[weasyprint.CSS(
-    #                                                     settings.STATIC_ROOT + 'css/pdf.css')])
+    response.write(content=content)
+
+    # FileResponse
+    response1 = FileResponse(content, content_type='application/pdf', filename=f'filename=order_{order.pk}.pdf')
+    response1['Content-Disposition'] = f'filename=order_{order.pk}.pdf'
     return response

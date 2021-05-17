@@ -1,10 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load orders_tags %}
+<html>
 
+<body>
+  <h1>My Shop</h1>
+  <p>
+    Invoice no. {{ order.id }}</br>
+    <span class="secondary">
+      {{order.created|date:"M d, Y"|translit_from_ru_to_eng }}
+    </span>
+  </p>
+
+  <h3>Bill to</h3>
+  <p>
+    {{ order.first_name|translit_from_ru_to_eng }} {{ order.last_name|translit_from_ru_to_eng }}<br>
+    {{ order.email|translit_from_ru_to_eng }}<br>
+    {{ order.address|translit_from_ru_to_eng }}<br>
+    {{ order.postal_code }}, {{ order.city|translit_from_ru_to_eng }}
+  </p>
+
+  <h3>Items bought</h3>
+  <table>
+    <thead>
+      <tr>
+        <th width=200>Product</th>
+        <th width=200>Price</th>
+        <th width=200>Quantity</th>
+        <th width=200>Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.items.all %}
+        <tr class="row{% cycle '1' '2' %}">
+          <td width=220>{{ item.product.name|translit_from_ru_to_eng }}</td>
+          <td width=220 class="num">${{ item.price }}</td>
+          <td width=220 class="num">{{ item.quantity }}</td>
+          <td width=220 class="num">${{ item.get_cost }}</td>
+        </tr>
+      {% endfor %}
+      <tr class="total">
+        <td colspan="3" width=220>Total</td>
+        <td class="num" width=220>${{ order.get_total_cost }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <span class="{% if order.paid %}paid{% else %}pending{% endif %}">
+    {% if order.paid %}Paid{% else %}Pending payment{% endif %}
+  </span>
 </body>
 </html>

@@ -65,6 +65,14 @@ if settings.DEBUG:
 # и т.д. Плюс гемора с ним очень много. Нахуй его(её), этот weasyprint.
 # А в результате кстати все равно нихуя не работает,
 # библиотека нормально импортироваться не может)
+
+
+
+# Так что будем работать с FPDF
+#
+# https://python-scripts.com/create-pdf-pyfpdf
+# https://pyfpdf.readthedocs.io/en/latest/Tutorial/index.html
+# https://pypi.org/project/fpdf/
 # ---------------------------------------------------------------------- weasyprint
 
 
