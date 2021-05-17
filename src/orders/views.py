@@ -1,18 +1,24 @@
 # import weasyprint - не работает
-import time
-import os
 from fpdf import FPDF, HTMLMixin
 
+from django.conf import settings
+from django.http import HttpResponse, FileResponse
+from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, reverse, redirect, get_object_or_404
-from django.template.loader import render_to_string
-from django.http import HttpResponse, FileResponse
-from django.conf import settings
 
-from orders.forms import CreateOrderModelForm
+from cart.cart import Cart
 from orders.models import OrderItem, Order
 from orders.tasks import order_created_task
-from cart.cart import Cart
+from orders.forms import CreateOrderModelForm
+
+"""
+Libraries:
+
+fpdf - https://pyfpdf.readthedocs.io/en/latest/index.html
+fpdf - https://pypi.org/project/fpdf/
+fpdf - https://python-scripts.com/create-pdf-pyfpdf
+"""
 
 
 class WriteHTMLinPDF(FPDF, HTMLMixin):

@@ -1,9 +1,15 @@
 import braintree
+from io import BytesIO
+from fpdf import FPDF, HTMLMixin
 
+from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import render, redirect, reverse, get_object_or_404
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.shortcuts import (render, redirect, reverse, get_object_or_404, )
 
 from orders.models import Order
+from orders.views import WriteHTMLinPDF
 from shop.utils import get_view_at_console1
 
 """
@@ -12,6 +18,27 @@ from shop.utils import get_view_at_console1
 
 Так выглядит QueryDict при post запросе. Никаких cvv, card-number, expiration-date
 """
+
+
+def experiment(request):
+    order = Order.objects.first()
+    send_order_by_email_in_pdf(order)
+    return JsonResponse({'status': 'ok', })
+
+
+def send_order_by_email_in_pdf(order):
+    subject = f'My Shop. Счет по заказу {order.pk}'
+    message = f'Ваш счет по заказу {order.pk} в формате PDF. Вы можете его скачать'
+    email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [order.email, ])
+    template_html = render_to_string('payment/pdf.html',
+                                     context={'order': order, })
+    pdf = WriteHTMLinPDF()
+    pdf.add_page()
+    pdf.write_html(template_html)
+    content = pdf.output(f'order_{order.pk}.pdf', 'S').encode('latin-1')
+
+    email.attach(filename=f'order_{order.pk}.pdf', content=content, mimetype='application/pdf')
+    return email.send()
 
 
 def payment_process_view(request):
@@ -43,6 +70,7 @@ def payment_process_view(request):
             # сохраняем уникальный id транзакции
             order.braintree_id = result.transaction.id
             order.save()
+            send_order_by_email_in_pdf(order)
             return redirect(reverse('payment:done'))
         else:
             return redirect(reverse('payment:canceled'))
