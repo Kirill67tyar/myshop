@@ -30,7 +30,11 @@ def create_order_view(request):
     if request.method == 'POST':
         form = CreateOrderModelForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:
                 kwargs = {
                     'order': order,

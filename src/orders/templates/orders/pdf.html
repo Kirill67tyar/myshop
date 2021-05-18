@@ -39,6 +39,9 @@
     {% endfor %}
     </tbody>
 </table>
+{% if order.coupon %}
+<p>Promo code:&nbsp;&nbsp; {{ order.coupon }} (-{{order.discount}}%)</p>
+{% endif %}
 <p>Total:&nbsp;&nbsp; ${{ order.get_total_cost }}</p>
 <br>
 <p>{% if order.paid %}Paid{% else %}Pending payment{% endif %}</p>

@@ -38,16 +38,38 @@
         <td class="num">${{ item.price }}</td>
         <td class="num">${{ item.total_price }}</td>
     </tr>
-
     {% endwith %}
     {% endfor %}
+
+    {% with coupon=cart.coupon %}
+    {% if coupon %}
+    <tr class="subtotal">
+        <td>Промежуточный итог (без скидки)</td>
+        <td colspan="4"></td>
+        <td class="num">${{ cart.get_total_price|floatformat:"2" }}</td>
+    </tr>
+    <tr>
+        <td>"{{ coupon.code }}" - {{coupon.discount}}%</td>
+        <td colspan="4"></td>
+        <td class="num neg">-{{ cart.get_discount|floatformat:"2" }}</td>
+    </tr>
+    {% endif %}
+    {% endwith %}
+
     <tr class="total">
         <td>Общее</td>
         <td colspan="4"></td>
-        <td class="num">${{ cart.get_total_price }}</td>
+        <td class="num">${{ cart.get_total_price_after_discount|floatformat:"2" }}</td>
     </tr>
     </tbody>
 </table>
+
+<p>Введите купон. За одну покупку вы можете использовать только один купон.</p>
+<form action="{% url 'coupons:apply' %}" method="post">
+    {{ coupon_apply_form }}
+    <input type="submit" value="Применить">
+    {% csrf_token %}
+</form>
 
 <p class="text-right">
     <a href="{% url 'shop:product_list' %}" class="button light">Продолжить покупки</a>
