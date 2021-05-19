@@ -97,7 +97,7 @@ class Cart:
     @property
     def coupon(self):
         if self.coupon_id:
-            return Coupon.objects.get(pk=self.coupon_id)
+            return Coupon.objects.filter(pk=self.coupon_id).first()
         return None
 
     @property

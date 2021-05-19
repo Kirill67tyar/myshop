@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load static %}
 
-{% block title %}Корзина{% endblock %}
+{% block title %}{% trans 'Cart' %}{% endblock %}
 
 {% block content %}
-<h1>Ваша корзина покупок</h1>
+<h1>{% trans 'Your shopping cart' %}</h1>
 <table class="cart">
     <thead>
     <tr>
-        <th>Фото</th>
-        <th>Продукт</th>
-        <th>Количетво</th>
-        <th>Удалить</th>
-        <th>Цена одного товара</th>
-        <th>Цена</th>
+        <th>{% trans 'Photo' %}</th>
+        <th>{% trans 'Product' %}</th>
+        <th>{% trans 'Quantity' %}</th>
+        <th>{% trans 'Delete' %}</th>
+        <th>{% trans 'Price for one item' %}</th>
+        <th>{% trans 'Total price' %}</th>
     </tr>
 
     </thead>
@@ -34,7 +35,7 @@
                 <input type="submit" value="изменить">
             </form>
         </td>
-        <td><a href="{% url 'cart:remove_cart' product.pk %}">Удалить</a></td>
+        <td><a href="{% url 'cart:remove_cart' product.pk %}">{% trans 'Delete' %}</a></td>
         <td class="num">${{ item.price }}</td>
         <td class="num">${{ item.total_price }}</td>
     </tr>
@@ -43,7 +44,7 @@
     {% with coupon=cart.coupon %}
     {% if coupon %}
     <tr class="subtotal">
-        <td>Промежуточный итог (без скидки)</td>
+        <td>{% trans 'Subtotal (without discount)' %}</td>
         <td colspan="4"></td>
         <td class="num">${{ cart.get_total_price|floatformat:"2" }}</td>
     </tr>
@@ -55,31 +56,31 @@
     {% endif %}
 
     <tr class="total">
-        <td>Общее</td>
+        <td>{% trans 'Total price' %}</td>
         <td colspan="4"></td>
         <td class="num">${{ cart.get_total_price_after_discount|floatformat:"2" }}</td>
     </tr>
     </tbody>
 </table>
 
-<p>Введите промо-код. За одну покупку вы можете использовать только один промо-код.
-    {% if coupon %}(Вы ввели "{{ coupon }}"){% endif %}</p>
+<p>{% trans 'Enter promo code. You can only use one promo code per purchase.' %}
+    {% if coupon %}({% trans 'You enter' %} "{{ coupon }}"){% endif %}</p>
 <form action="{% url 'coupons:apply' %}" method="post">
     {{ coupon_apply_form }}
-    <input type="submit" value="Применить">
+    <input type="submit" value="{% trans 'Apply' %}">
     {% csrf_token %}
 </form>
 {% if coupon %}
 <p class="text-left">
-    <a href="{% url 'coupons:delete' %}" class="button">Очистить промокод</a>
+    <a href="{% url 'coupons:delete' %}" class="button">{% trans 'Delete promo code' %}</a>
 </p>
 {% endif %}
 {% endwith %}
 
 <p class="text-right">
-    <a href="{% url 'shop:product_list' %}" class="button light">Продолжить покупки</a>
+    <a href="{% url 'shop:product_list' %}" class="button light">{% trans 'Back to shopping' %}</a>
     {% if cart|length > 0 %}
-    <a href="{% url 'orders:create_order' %}" class="button">Оформить</a>
+    <a href="{% url 'orders:create_order' %}" class="button">{% trans 'Checkout' %}</a>
     {% endif %}
 </p>
 <br>

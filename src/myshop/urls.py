@@ -13,19 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
+from django.utils.translation import gettext_lazy as _
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('cart/', include('cart.urls', namespace='cart')),
-    path('orders/', include('orders.urls', namespace='orders')),
-    path('payment/', include('payment.urls', namespace='payment')),
-    path('coupons/', include('coupons.urls', namespace='coupons')),
+urlpatterns = i18n_patterns(
+    path(_('admin/'), admin.site.urls),
+    path(_('cart/'), include('cart.urls', namespace='cart')),
+    path(_('orders/'), include('orders.urls', namespace='orders')),
+    path(_('payment/'), include('payment.urls', namespace='payment')),
+    path(_('coupons/'), include('coupons.urls', namespace='coupons')),
+    path('rosetta/', include('rosetta.urls')),
     path('', include('shop.urls', namespace='shop')),
-]
+)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -68,13 +71,9 @@ if settings.DEBUG:
 # библиотека нормально импортироваться не может)
 
 
-
 # Так что будем работать с FPDF
 #
 # https://python-scripts.com/create-pdf-pyfpdf
 # https://pyfpdf.readthedocs.io/en/latest/Tutorial/index.html
 # https://pypi.org/project/fpdf/
 # ---------------------------------------------------------------------- weasyprint
-
-
-

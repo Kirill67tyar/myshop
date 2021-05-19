@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-19 12:30+0500\n"
+"POT-Creation-Date: 2021-05-19 17:20+0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
 #: .\orders\models.py:12
 msgid "first name"
 msgstr "имя"
@@ -42,3 +43,35 @@ msgstr "почтовый индекс"
 #: .\orders\models.py:17
 msgid "city"
 msgstr "город"
+
+#: .\orders\templates\orders\create.html:4
+#: .\orders\templates\orders\create.html:7
+msgid "Checkout"
+msgstr "Проверка"
+
+#: .\orders\templates\orders\create.html:9
+msgid "Your order"
+msgstr "Ваш заказ"
+
+#: .\orders\templates\orders\create.html:25
+#, fuzzy
+#| msgid "postal code"
+msgid "Total price"
+msgstr "почтовый индекс"
+
+#: .\orders\templates\orders\create.html:30
+msgid "To pay off"
+msgstr "Оплатить"
+
+#: .\orders\templates\orders\create_done.html:4
+#: .\orders\templates\orders\create_done.html:7
+msgid "Thank you"
+msgstr "Спасибо"
+
+#: .\orders\templates\orders\create_done.html:8
+msgid "your order has been successfully completed. Your order number"
+msgstr "Ваш заказ был успешно сформирован. Номер вашего заказа - "
+
+#: .\orders\urls.py:9
+msgid "create/"
+msgstr "создать/"
