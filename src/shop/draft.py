@@ -470,6 +470,9 @@ Options - это отличный класс для работы с meta-data м
 
 # A custom app registry to use, if you're making a separate model set.
 
+Кстати, класс Options доступен не только для классов моделей (заимствованных от Model)
+но и от ModelForm, а возможно даже и от Form
+
 Имхо - Options дает возможность сделать наш код универсальным при работе с моделями,
 а не работать нам с конкретно какой-то моделью
 
@@ -477,7 +480,113 @@ Options - это отличный класс для работы с meta-data м
 Отличный пример работы с Options
 
 Да и сам Options переводится как "опции" что хорошо соответствует функции этого класса
+
+
+----------------------------------------------------------------------------------------------------------
+                        Интернационализация и Локализация
+
+Интернационализация (i18n) - процесс адаптации программы, чтобы она могла использоваться на разных языках
+Локализация - приведение (l10n) программы к одному языку
+https://www.google.com/search?q=i18n+l10n&newwindow=1&rlz=1C1SQJL_ruRU847RU848&sxsrf=ALeKk03ssCR3q6zpvP6g13_3FZRNhQk82g%3A1621330673021&ei=8YqjYJxZkNfcA4qhusgN&oq=i18n+l10n&gs_lcp=Cgdnd3Mtd2l6EAMyAggAMgUIABDLATICCAAyBQgAEMsBOgcIABBHELADOgcIABCwAxBDOgUIABCxAzoICAAQsQMQgwFQi7tGWKPlRmCK6UZoA3ACeACAAfECiAG_C5IBBzAuNS4xLjGYAQCgAQKgAQGqAQdnd3Mtd2l6yAEKwAEB&sclient=gws-wiz&ved=0ahUKEwjcldC299LwAhWQK3cKHYqQDtkQ4dUDCA4&uact=5
+Подсистема интернационализации django поддерживает переводы более чем на 50 языках
+
+Система интернационализации django позволяет пометить строки, которые нужно перевести
+и в python коде и в html шаблоне.
+Эта система использует возможности утилиты gettext чтобы управлять файлами переводов
+
+Файл перевода - это просто текстовый файл
+О содержит часть строк, которые нужно перевести, и их перевод на конкретный язык
+Такие файлы сохраняются с расширеникм .po
+После того, как процесс перевод будет окончен получившиеся документы компилируются в файл
+с расширением .mo для быстрого поиска переводов
+
+Internationalization
+https://docs.djangoproject.com/en/3.2/topics/i18n/
+
+список всех кодов языка:
+http://www.i18nguy.com/unicode/language-identifiers.html
+
+LANGUAGE_CODE = 'ru-ru'#'en-us'
+
+TIME_ZONE = 'UTC'# строка задающая временную зону проекта (по умолчанию - 'UTC')
+
+USE_I18N = True# включена ли интернационализация
+
+USE_L10N = True# включена ли локализация для дат, времени и чисел
+
+USE_TZ = True# использовать ли даты с учетом временной зоны
+
+
+from django.conf import global_settings
+
+В константе LANGUAGES указаны все доступные языки для django
+в settings используются в основном константы, и часто эти константы из проекта в проект одни и те же
+
+Чтобы настроить проект на поддержание каких-либо языков нужно создать
+тапл LANGUAGES состоящий из доступных языков
+
+LOCALE_PATHS - список путей в файловой системе, по которым django будет находить переводы проекта
+LOCALE_PATHS = os.path.join(BASE_DIR, 'locale/')
+Как только django находит перый, он прерывает поиск. Если находится в приложении, то
+сначала будет искать в приложении, а потом в корне проекта
+
+Полный список настроек для интернационализации
+https://docs.djangoproject.com/en/3.2/ref/settings/#globalization-i18n-l10n
+
+
+from django.utils.translation import gettext as _
+
+Чтобы переводить стоки в python код нужно пометить их как переводимые с помощью функции gettext
+from django.utils.translation import gettext as _
+Среди разработчиков принято соглашение помечать эту функцию как _
+
+базовые команды gettext:
+
+-- gettext
+-- gettext_lazy
+-- ngettext
+-- ngettext_lazy
+
+1) Базовый вызов функции прост:
+from django.utils.translation import gettext as _
+output = _('String must be translated')
+
+2) Ленивые переводы (_lazy) выполняются не в момент вызова функции, а когда они понадобятся
+Бывает полезен когда строки содержатся в файлах в момент импортирования модулей
+
+3) Иногда нужно применять перевод с именованными переменными, которые динмачески меняются:
+month = 'April'
+day = 12
+output = "Today is %(month)s %(day)" % {'month': month, 'day': day,}
+
+Всегда нужно использовать имнованные аргументы вместо позиционых. Т.к. предложения
+на разных языках имеют разную строктуру
+
+4) для перевода строк во множественном числе используется ngettext и ngettext_lazy
+эти функции выполняют перевод строк в множественном и единственном числе в зависимости
+от количества объекта
+
+
+Что есть файл с расширением .po
+https://ru.opensuse.org/openSUSE:%D0%9F%D0%B5%D1%80%D0%B5%D0%B2%D0%BE%D0%B4_PO_%D1%84%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2
+Все тексты что должны быть переведены (диалоги, меню и т.д...), сохраняется в PO файл.
+PO файл - это файл перевода для приложения, с расширением .po и со специальной структурой
+содержащей: информацию о языке, переводчике, оригинальные диалоги и их переводы.
+Оригинальные диалоги начинаются с msgid, за ними следуют строки msgstr "текст перевода".
+Информацию о языке и переводчике находится в начале PO файла. Если для диалога нет перевода,
+оставьте msgstr пустым. Строки начинающиеся с символа # являются комментариями.
+
+Можно также использовать приложение Poedit
+https://poedit.net/
+Доступно для Windows, MacOS, Linux
+
+В целом об этой теме и вообще логике работы интернационализации и локализации Django
+читай Антонио Меле - Django 2 в примерах, стр. 267 - ...
 """
+from django.conf import global_settings
+from django.middleware.locale import LocaleMiddleware
+
+'django.middleware.locale.LocaleMiddleware'
 from django.db.models.options import Options
 # Минутка философии
 # когда создаешь какой-нибудь класс, подумай - целесообразно ли создавать класс чтобы там
@@ -495,7 +604,10 @@ from django.db.models.options import Options
 # идентификаторы. А получать сами объекты из бд лишь во время выполнения задачи (кода обработчика)
 # обрати внимание, что во всех обработчиках мы так и делаем
 
-
+# Интернационализация (i18n) - процесс адаптации программы, чтобы она могла использоваться на разных языках
+# Локализация - приведение (l10n) программы к одному языку
+# https://www.google.com/search?q=i18n+l10n&newwindow=1&rlz=1C1SQJL_ruRU847RU848&sxsrf=ALeKk03ssCR3q6zpvP6g13_3FZRNhQk82g%3A1621330673021&ei=8YqjYJxZkNfcA4qhusgN&oq=i18n+l10n&gs_lcp=Cgdnd3Mtd2l6EAMyAggAMgUIABDLATICCAAyBQgAEMsBOgcIABBHELADOgcIABCwAxBDOgUIABCxAzoICAAQsQMQgwFQi7tGWKPlRmCK6UZoA3ACeACAAfECiAG_C5IBBzAuNS4xLjGYAQCgAQKgAQGqAQdnd3Mtd2l6yAEKwAEB&sclient=gws-wiz&ved=0ahUKEwjcldC299LwAhWQK3cKHYqQDtkQ4dUDCA4&uact=5
+# Подсистема интернационализации django поддерживает переводы более чем на 50 языках
 
 # from django.template.context_processors import request
 # request - экземляр класса HttpRequest

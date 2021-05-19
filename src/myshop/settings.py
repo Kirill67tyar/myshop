@@ -14,11 +14,11 @@ from pathlib import Path
 import dotenv
 import os
 
+
 dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -32,7 +32,6 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -81,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myshop.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -91,7 +90,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -111,20 +109,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'#'en-us'
+# список всех кодов языка:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+from django.utils.translation import gettext_lazy as _
+
+LANGUAGE_CODE = 'en'  # 'ru-ru'#'en-us'
+
+LANGUAGES = [
+    ('ru', _('Russian')),
+    ('en', _('English')),
+]
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale/'),
+)
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = True  # включена ли интернационализация
 
-USE_L10N = True
+USE_L10N = True  # включена ли локализация для дат, времени и чисел
 
-USE_TZ = True
-
+USE_TZ = True  # использовать ли даты с учетом временной зоны
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -134,14 +143,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-
 # здесь мы указываем откуда будем доставать статику и подключать к шаблону,
 # с помощью тега {% static 'css/style.css' %}
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
 
 # здесь мы указываем куда django будет собирать всю статику проекта при команде collectstatic
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
@@ -159,14 +165,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # ключ для сессии, конкретно для корзины покупок
 CART_SESSION_ID = 'cart'
 
-
 # # email backend, который позвляет нам вместо почты (работы с SMTP сервером) использовать консоль
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 
 
 # -------------------------------------------------------- SMTP-server settings
@@ -180,7 +183,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 # -------------------------------------------------------- SMTP-server settings
-
 
 
 # -------------------------------------------------------- BRAINTREE settings

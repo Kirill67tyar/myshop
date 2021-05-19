@@ -9,11 +9,10 @@ from coupons.models import Coupon
 from coupons.forms import CouponApplyForm
 
 
-
 @require_POST
 def coupon_apply_view(request):
-    # now = datetime.now()
     cart = Cart(request=request)
+    # now = datetime.now()
     now = timezone.now()
     form = CouponApplyForm(request.POST)
     coupon_id = cart.coupon_id
@@ -31,4 +30,12 @@ def coupon_apply_view(request):
             request.session['coupon_id'] = coupon.pk
         else:
             request.session['coupon_id'] = coupon_id
+    return redirect(reverse('cart:detail_cart'))
+
+
+def coupon_delete_view(request):
+    try:
+        del request.session['coupon_id']
+    except KeyError:
+        pass
     return redirect(reverse('cart:detail_cart'))

@@ -7,7 +7,6 @@ from shop.models import Product
 from coupons.models import Coupon
 
 
-
 # помни, что наш request.session - по сути словарь
 # а словарь у на что? правильно - мутабельный тип данных
 # т.е. при работе с self.session бы будем работать и с request.session
@@ -92,6 +91,7 @@ class Cart:
     def clear(self):
         """Очищение корзины"""
         del self.session[settings.CART_SESSION_ID]
+        del self.session['coupon_id']
         self.save()
 
     @property
