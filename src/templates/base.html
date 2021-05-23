@@ -29,14 +29,13 @@
         </ul>
     </div>
 </div>
-
 <div id="subheader">
     <div class="cart">
         <a href="{% url 'cart:detail_cart' %}">
             <h3>
                 {% with total_items=cart|length total_price=cart.get_total_price_after_discount %}
                 {% if cart|length > 0 %}
-                {{ total_items }}&nbsp;&nbsp;(${{ total_price }})
+                {{ total_items }}&nbsp;&nbsp;(${{ total_price|floatformat:"2" }})
                 {% else %}
                 {% trans "Cart is empty" %}
                 {% endif %}
@@ -51,6 +50,7 @@
     {% block content %}
     {% endblock %}
 </div>
+
 
 </body>
 </html>

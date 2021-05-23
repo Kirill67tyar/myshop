@@ -14,7 +14,6 @@ from pathlib import Path
 import dotenv
 import os
 
-
 dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +47,7 @@ INSTALLED_APPS = [
     'payment.apps.PaymentConfig',
     'coupons.apps.CouponsConfig',
     'rosetta',
+    'parler',
 ]
 
 MIDDLEWARE = [
@@ -232,3 +232,18 @@ braintree.Configuration.configure(
 # CVV - 123
 # date - 12/24
 # -------------------------------------------------------- BRAINTREE settings
+
+
+# -------------------------------------------------------- DJANGO-PARLER settings
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en', },
+        {'code': 'ru', },
+    ),
+    'default': {
+        'fallbacks': 'en',  # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        'hide_untranslated': False,  # the default; let .active_translations() return fallbacks too. (прятать или нет)
+    }
+}
+# -------------------------------------------------------- DJANGO-PARLER settings

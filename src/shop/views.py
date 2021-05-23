@@ -40,10 +40,16 @@ def experiments(request):
 
 
 def product_list_view(request, category_slug=None):
+    language = request.LANGUAGE_CODE
     categories = Category.objects.all()
     category = None
     if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
+        named_arguments_for_category = {
+            'klass': Category,
+            'translations__language_code': language,
+            'translations__slug': category_slug,
+        }
+        category = get_object_or_404(**named_arguments_for_category)
         products = Product.objects.filter(available=True, category=category)
     else:
         products = Product.objects.filter(available=True)
@@ -57,19 +63,17 @@ def product_list_view(request, category_slug=None):
 
 def product_detail_view(request, id, slug):
     experiments(request)
-
-    kwargs = {
+    language = request.LANGUAGE_CODE
+    named_arguments = {
         'klass': Product,
         'id': id,
-        'slug': slug,
+        'translations__language_code': language,
+        'translations__slug': slug,
         'available': True,
     }
-    product = get_object_or_404(**kwargs)
+    product = get_object_or_404(**named_arguments)
     context = {
         'product': product,
         'add_quantity_product_to_cart_form': CartAddProductForm,
     }
     return render(request, 'shop/product/detail.html', context=context)
-
-
-
