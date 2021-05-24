@@ -2,10 +2,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 
+from shop.recommender import Recommender
 from shop.models import Category, Product
 from shop.utils import get_view_at_console, get_view_at_console2
-from shop.recommender import Recommender
-
 from cart.forms import CartAddProductForm
 
 
