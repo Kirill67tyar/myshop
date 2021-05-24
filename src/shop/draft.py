@@ -661,6 +661,41 @@ https://django-parler.readthedocs.io/en/stable/compatibility.html#
 Нельзя указывать в мета классе модели ordering, index_together
 
 Короче, django-parler - ебучая библиотека, с кучей багов и костылей, нафиг она нужна.
+
+
+
+Для локализации форм (и не только) к другим странам можно использовать библиотеку django-localflawor
+https://pypi.org/project/django-localflavor/
+https://django-localflavor.readthedocs.io/en/latest/
+Смотри пример ее выполнения в книжке Антонио Меле - Django 2 в примерах, стр. 293
+
+Интернализацию и локализацию нужно знать углубленно, если ты создаешь приложение,
+которое должно работать на разных языках, а это бывает довольно редко.
+Просто знай, что такое есть, в чем разница между i18n и l10n,
+что такое файлы с расширением .po и .mo, что есть огромное кол-во настроек для всего этого
+gettex from django, также множество всевозможных дополнительных библиотек python и django
+для работы с интернационализацией/локализацией и вообще с языками.
+Всегда можно почитать документацию.
+
+
+----------------------------------------------------------------------------------------------------------
+                        Redis
+
+Аллилуяяя
+У меня полуилось установить redis на windows.
+port redis-server - 6379
+
+Как установил:
+https://coderoad.ru/6476945/%D0%9A%D0%B0%D0%BA-%D0%B7%D0%B0%D0%BF%D1%83%D1%81%D1%82%D0%B8%D1%82%D1%8C-Redis-%D0%BD%D0%B0-Windows
+https://github.com/microsoftarchive/redis/releases
+            ***********
+Я нашел еще один простой способ установить Redis под Windows
+Загрузите последний файл Redis .msi из
+https://github.com/MSOpenTech/redis/releases
+после установки. Установлен сервис redis, мы можем управлять им с Service manager
+            ***********
+
+https://pypi.org/project/redis/
 """
 from django.conf import global_settings
 from django.db.models import ManyToOneRel, Manager
@@ -742,3 +777,6 @@ from django.template.loader import render_to_string
 # благодаря валидаторам MinValueValidator(0) и MaxValueValidator(100)
 # мы не можем ввести значение <0 и >100. Наш discount может быть строго 0<=discount<=100
 # Обрати внимание что это модель а не форма, а аргумент validators есть
+
+
+# fake headers (понадобится в нашем проекте)

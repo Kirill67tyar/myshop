@@ -63,6 +63,20 @@
     </tbody>
 </table>
 
+<!--    recommended products     -->
+{% if recommended_products %}
+<div class="recommendations cart">
+    <h3>{% trans "People who bought this also bought" %}</h3>
+    {% for p in recommended_products %}
+    <div class="item">
+        {% include '_inc/get_image.html' with product=p %}
+        <p><a href="{{ p.get_absolute_url}}">{{ p.name }}</a></p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<!--    recommended products     -->
+
 <p>{% trans 'Enter promo code. You can only use one promo code per purchase.' %}
     {% if coupon %}({% trans 'You enter' %} "{{ coupon }}"){% endif %}</p>
 <form action="{% url 'coupons:apply' %}" method="post">

@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 
 from shop.models import Category, Product
 from shop.utils import get_view_at_console, get_view_at_console2
+from shop.recommender import Recommender
 
 from cart.forms import CartAddProductForm
 
@@ -72,8 +73,11 @@ def product_detail_view(request, id, slug):
         'available': True,
     }
     product = get_object_or_404(**named_arguments)
+    r = Recommender()
+    recommended_products = r.suggest_products_for(products=[product, ], max_results=4)
     context = {
         'product': product,
         'add_quantity_product_to_cart_form': CartAddProductForm,
+        'recommended_products': recommended_products,
     }
     return render(request, 'shop/product/detail.html', context=context)

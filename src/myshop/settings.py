@@ -247,3 +247,11 @@ PARLER_LANGUAGES = {
     }
 }
 # -------------------------------------------------------- DJANGO-PARLER settings
+
+
+# -------------------------------------------------------- REDIS settings
+# redis config
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1#0
+# -------------------------------------------------------- REDIS settings

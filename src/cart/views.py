@@ -2,9 +2,10 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 
-from shop.models import Product
 from cart.cart import Cart
 from cart.forms import CartAddProductForm
+from shop.models import Product
+from shop.recommender import Recommender
 from coupons.forms import CouponApplyForm
 
 
@@ -31,7 +32,6 @@ def remove_cart_view(request, product_id):
     return redirect(reverse('cart:detail_cart'))
 
 
-# update_quantity_form
 def detail_cart_view(request):
     cart = Cart(request)
     # Здесь мы приваиваем нашему итерируемому объекту корзины
@@ -44,8 +44,15 @@ def detail_cart_view(request):
             'update': True,
         }
         item['update_quantity_form'] = CartAddProductForm(initial=initial)
+
+    r = Recommender()
+    products = [item['product'] for item in cart]
+    recommended_products = None
+    if products:
+        recommended_products = r.suggest_products_for(products=products, max_results=4)
     context = {
         'cart': cart,
         'coupon_apply_form': CouponApplyForm,
+        'recommended_products': recommended_products,
     }
     return render(request, 'cart/detail.html', context=context)
