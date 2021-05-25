@@ -8,6 +8,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 
 from cart.cart import Cart
+from shop.recommender import Recommender
 from orders.models import OrderItem, Order
 from orders.tasks import order_created_task
 from orders.forms import CreateOrderModelForm
@@ -35,6 +36,7 @@ def create_order_view(request):
                 order.coupon = cart.coupon
                 order.discount = cart.coupon.discount
             order.save()
+            products = []
             for item in cart:
                 kwargs = {
                     'order': order,
@@ -42,7 +44,12 @@ def create_order_view(request):
                     'price': item['price'],
                     'quantity': item['quantity'],
                 }
+                products.append(item['product'])
                 OrderItem.objects.create(**kwargs)
+
+            r = Recommender()
+            # сохраняем в redis какие продукты вместе покупают
+            r.products_bought(products)
             cart.clear()
             # метод delay() - запускает задачу асинхронно
             # order_created_task.delay(order.pk)
